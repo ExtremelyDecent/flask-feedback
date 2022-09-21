@@ -3,7 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.exceptions import Unauthorized
 
 from models import connect_db, db, User, Feedback
-from forms import RegisterForm, LoginForm, FeedbackForm, DeleteForm
+from forms import RegisterForm, LoginForm, FeedbackForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///flask-feedback"

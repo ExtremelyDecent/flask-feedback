@@ -54,5 +54,3 @@ class FeedbackForm(FlaskForm):
         "Content",
         validators=[InputRequired()]
     )
-
-

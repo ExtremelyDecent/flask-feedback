@@ -1,5 +1,6 @@
-from flask_sqlalchemy import SQLALCHEMY
-from flask_bcrypt import flask_bcrypt
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -14,11 +15,15 @@ class User(db.Model):
 
     __tablename__ = "users"
 
+    id = db.Column(
+        db.Integer, 
+        primary_key =True, 
+        autoincrement = True
+    )
     username = db.Column(
-        db.String(20)
+        db.String(20),
         nullable = False,
         unique = True,
-        primary_key = True,
     )
     password = db.Column(
         db.String(50),
@@ -42,7 +47,10 @@ class User(db.Model):
         default = False
     )
 
-    feedback = db.relationship("Feedback", backref = "user", cascade= "all,delete")
+    user_feedback = db.relationship("Feedback", backref="users", cascade="all,delete")
+    
+
+
 
     #class methods
 
@@ -59,6 +67,9 @@ class User(db.Model):
             last_name = last_name,
             email = email
         )
+        
+        db.session.add(user)
+        return user
 
     @classmethod
     def authenticate(cls, username, password):
@@ -80,7 +91,8 @@ class Feedback(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key = True
+        primary_key = True,
+        autoincrement = True
     )
 
     title = db.Column(
@@ -91,11 +103,11 @@ class Feedback(db.Model):
         db.Text,
         nullable = False
     )
-    username = db.Column(
-        db.String(20),
-        db.ForeignKey('user.username'),
-        nullable = False
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id')
     )
+
 
 
     
