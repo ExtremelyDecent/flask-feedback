@@ -3,7 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.exceptions import Unauthorized
 
 from models import connect_db, db, User, Feedback
-from forms import RegisterForm, LoginForm, FeedbackForm
+from forms import RegisterForm, LoginForm, FeedbackForm, DeleteForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///flask-feedback"
@@ -15,6 +15,8 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+db.create_all()
+db.session.commit()
 
 @app.route('/')
 def homepage():
@@ -67,7 +69,7 @@ def login():
             return redirect(f"/users/{user.username}")
         else:
             form.username.errors = ["Invalid username or password."]
-            return render_template("user/login.html", form=form)
+            return render_template("users/login.html", form=form)
     return render_template("users/login.html", form = form)
 
 @app.route("/logout")

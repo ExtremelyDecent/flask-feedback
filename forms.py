@@ -54,3 +54,5 @@ class FeedbackForm(FlaskForm):
         "Content",
         validators=[InputRequired()]
     )
+class DeleteForm(FlaskForm):
+    """Delete form -- this form is intentionally blank."""

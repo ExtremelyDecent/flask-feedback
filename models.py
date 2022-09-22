@@ -2,8 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 
 
-bcrypt = Bcrypt()
+
 db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 def connect_db(app):
 
@@ -15,18 +16,14 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    id = db.Column(
-        db.Integer, 
-        primary_key =True, 
-        autoincrement = True
-    )
     username = db.Column(
         db.String(20),
         nullable = False,
         unique = True,
+        primary_key = True
     )
     password = db.Column(
-        db.String(50),
+        db.String(100),
         nullable = False
     )
     email = db.Column(
@@ -47,7 +44,7 @@ class User(db.Model):
         default = False
     )
 
-    user_feedback = db.relationship("Feedback", backref="users", cascade="all,delete")
+    feedback = db.relationship("Feedback", backref="users", cascade="all,delete")
     
 
 
@@ -62,7 +59,7 @@ class User(db.Model):
         hashed_utf8 = hashed.decode("utf8")
         user = cls(
             username = username,
-            password = password,
+            password = hashed_utf8,
             first_name = first_name,
             last_name = last_name,
             email = email
@@ -75,7 +72,7 @@ class User(db.Model):
     def authenticate(cls, username, password):
         """Checks that user is in database and hashed password matches
         
-        Return user if validl else return False"""
+        Return user if valid else return False"""
 
         user = User.query.filter_by(username=username).first()
 
@@ -91,8 +88,8 @@ class Feedback(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key = True,
-        autoincrement = True
+        primary_key = True
+        
     )
 
     title = db.Column(
@@ -103,9 +100,11 @@ class Feedback(db.Model):
         db.Text,
         nullable = False
     )
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id')
+
+    username = db.Column(
+        db.String(20),
+        db.ForeignKey('users.username'),
+        nullable = False
     )
 
 
